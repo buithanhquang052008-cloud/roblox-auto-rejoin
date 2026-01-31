@@ -1,28 +1,42 @@
 #!/data/data/com.termux/files/usr/bin/bash
 set -e
 
-echo "🚀 Roblox Auto Rejoin - Online Installer"
+echo "🚀 Roblox Auto Rejoin PRO – Installer"
 
-BASE_DIR="$HOME/roblox-auto-rejoin"
-REPO_URL="https://github.com/buithanhquang052008-cloud/roblox-auto-rejoin.git"
+# ====== Chuẩn bị ======
+pkg update -y
+pkg install -y nodejs git dos2unix tmux
 
-# fix dpkg prompt
-pkg update -y -o Dpkg::Options::="--force-confold"
+# ====== Setup storage ======
+termux-setup-storage || true
 
-pkg install -y nodejs git tsu sqlite
+# ====== Thư mục cài ======
+INSTALL_DIR=$HOME/roblox-auto-rejoin
+rm -rf "$INSTALL_DIR"
+mkdir -p "$INSTALL_DIR"
+cd "$INSTALL_DIR"
 
-if [ -d "$BASE_DIR/.git" ]; then
-  echo "🔄 Update tool..."
-  cd "$BASE_DIR"
-  git pull
-else
-  echo "📥 Clone tool..."
-  git clone "$REPO_URL" "$BASE_DIR"
-  cd "$BASE_DIR"
-fi
+# ====== Clone repo ======
+echo "📥 Đang tải tool từ GitHub..."
+git clone https://github.com/buithanhquang052008-cloud/roblox-auto-rejoin.git .
+  
+# ====== Fix line ending ======
+dos2unix *.sh *.cjs 2>/dev/null || true
 
-npm install --silent || true
-chmod +x rejoin.cjs
+# ====== Cài package node ======
+echo "📦 Cài npm dependencies..."
+npm install axios cli-table3 figlet boxen screenshot-desktop
 
-echo "✅ Cài đặt hoàn tất!"
-node rejoin.cjs
+# ====== Quyền chạy ======
+chmod +x rejoin.cjs install.sh install-online.sh
+
+# ====== Hoàn tất ======
+echo ""
+echo "✅ CÀI ĐẶT HOÀN TẤT!"
+echo "▶️ Chạy tool bằng:"
+echo "   cd ~/roblox-auto-rejoin && node rejoin.cjs"
+echo ""
+echo "🔥 Chạy nền 24/7 (khuyên dùng):"
+echo "   tmux new -s rejoin"
+echo "   node rejoin.cjs"
+echo "   (Ctrl+B rồi D để thoát)"
