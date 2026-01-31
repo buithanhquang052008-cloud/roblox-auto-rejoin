@@ -1,0 +1,9 @@
+{
+  "name": "roblox-auto-rejoin",
+  "version": "1.0.0",
+  "main": "rejoin.cjs",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node rejoin.cjs"
+  }
+}
